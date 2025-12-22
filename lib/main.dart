@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:myresto/presentations/home_page.dart';
 import 'package:myresto/utils/values/strings/strings.dart';
 import 'package:myresto/utils/values/themes/themes.dart';
 
 void main() {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: Strings.appName,
       theme: Themes.myTheme,
-      home: Container(),
+      home: HomePage(),
     ),
   );
 }
