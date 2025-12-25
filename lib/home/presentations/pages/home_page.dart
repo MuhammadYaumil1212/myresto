@@ -196,10 +196,8 @@ class _HomePageState extends State<HomePage> {
                       side: const BorderSide(
                         color: MyColors.brown200,
                         width: 1.5,
-                      ), // Defines the border
-                      borderRadius: .circular(
-                        10.0,
-                      ), // Optional: Adds rounded corners
+                      ),
+                      borderRadius: .circular(10.0),
                     ),
                     child: const ListTile(
                       title: Text(
