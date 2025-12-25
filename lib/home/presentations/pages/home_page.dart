@@ -5,7 +5,6 @@ import 'package:myresto/home/data/local/dataSources/restaurant_local_datasource.
 import 'package:myresto/home/data/repository/home_repository.dart';
 import 'package:myresto/home/presentations/sections/home_search_bar.dart';
 import 'package:myresto/home/presentations/sections/list_restaurant.dart';
-import 'package:myresto/home/presentations/widgets/mode_button.dart';
 import 'package:myresto/utils/values/colors/colors.dart';
 
 import '../../data/models/Restaurant.dart';
@@ -25,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   bool _hasMore = true;
   List<Restaurant> _allRestaurants = [];
   List<Restaurant> _displayedRestaurants = [];
-
+  bool _isRecursiveMode = false;
   bool _isLoading = true;
   String _errorMessage = "";
 
@@ -48,6 +47,7 @@ class _HomePageState extends State<HomePage> {
           _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
 
           _isLoading = false;
+          _isRecursiveMode = false;
           _hasMore = _allRestaurants.length > _displayedRestaurants.length;
         });
       }
@@ -89,6 +89,25 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _toggleSearchMode() {
+    setState(() {
+      _isRecursiveMode = !_isRecursiveMode;
+    });
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Mode Pencarian: ${_isRecursiveMode ? 'REKURSIF' : 'ITERATIF'}",
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: _isRecursiveMode
+            ? MyColors.brown500
+            : MyColors.brown200,
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
   void _handleSearch(String query) async {
     if (query.isEmpty) {
       setState(() {
@@ -97,13 +116,21 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     int? searchPrice = int.tryParse(query);
-
+    Restaurant? result;
     if (searchPrice != null) {
       setState(() => _isLoading = true);
 
-      final result = await _repository.findRestaurantByInterpolationAlgorithm(
-        searchPrice,
-      );
+      if (_isRecursiveMode) {
+        // panggil fungsi rekursif
+        result = await _repository.findRestaurantByInterpolationRecursive(
+          searchPrice,
+        );
+      } else {
+        // panggil fungsi iteratif
+        result = await _repository.findRestaurantByInterpolationAlgorithm(
+          searchPrice,
+        );
+      }
 
       setState(() {
         _isLoading = false;
@@ -136,13 +163,20 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          elevation: 0.0,
+          onPressed: _toggleSearchMode,
+          elevation: 2.0,
+          backgroundColor: Colors.white,
+          shape: CircleBorder(
+            side: BorderSide(
+              color: _isRecursiveMode ? MyColors.brown500 : MyColors.brown300,
+              width: 2,
+            ),
+          ),
           child: SvgPicture.asset(
             "assets/icons/rekursif_icon.svg",
-            color: MyColors.brown500,
-            width: 40,
-            height: 40,
+            color: _isRecursiveMode ? MyColors.brown500 : MyColors.brown400,
+            width: 30,
+            height: 30,
           ),
         ),
         body: Column(
