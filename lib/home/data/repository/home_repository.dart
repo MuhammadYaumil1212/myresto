@@ -43,7 +43,7 @@ class HomeRepository {
         if (restaurants[low].price == price) {
           stopwatch.stop();
           _printSuccessLog(restaurants[low], steps, stopwatch);
-          return restaurants[low];
+          return restaurants[low]; //ditemukan
         }
         _printNotFoundLog(steps, stopwatch);
         return null;
