@@ -17,8 +17,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final HomeRepository _repository;
   late TextEditingController _controller;
+  final int _batchSize = 20;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
   List<Restaurant> _allRestaurants = [];
   List<Restaurant> _displayedRestaurants = [];
+
   bool _isLoading = true;
   String _errorMessage = "";
 
@@ -38,8 +42,10 @@ class _HomePageState extends State<HomePage> {
       if (mounted) {
         setState(() {
           _allRestaurants = data;
-          _displayedRestaurants = data;
+          _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
+
           _isLoading = false;
+          _hasMore = _allRestaurants.length > _displayedRestaurants.length;
         });
       }
     } catch (e) {
@@ -50,6 +56,34 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }
+  }
+
+  void _loadMoreData() async {
+    if (_isLoadingMore || !_hasMore || _controller.text.isNotEmpty) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    setState(() {
+      int currentLength = _displayedRestaurants.length;
+      List<Restaurant> nextBatch = _allRestaurants
+          .skip(currentLength)
+          .take(_batchSize)
+          .toList();
+
+      if (nextBatch.isEmpty) {
+        _hasMore = false;
+      } else {
+        _displayedRestaurants.addAll(nextBatch);
+      }
+
+      _isLoadingMore = false;
+    });
   }
 
   void _handleSearch(String query) async {
@@ -75,11 +109,14 @@ class _HomePageState extends State<HomePage> {
         } else {
           _displayedRestaurants = [];
         }
+        _hasMore = false;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Interpolation Search hanya untuk Harga (Angka)"),
+          content: Text(
+            "Interpolation Search hanya untuk Angka, tanpa spesial karakter",
+          ),
         ),
       );
     }
@@ -101,7 +138,28 @@ class _HomePageState extends State<HomePage> {
               onChanged: (value) => _handleSearch(_controller.text),
               controller: _controller,
             ),
-            Expanded(child: _buildListContent()),
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (!_isLoadingMore &&
+                      scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                    _loadMoreData();
+                  }
+                  return true;
+                },
+                child: Column(
+                  children: [
+                    Expanded(child: _buildListContent()),
+                    if (_isLoadingMore)
+                      const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: CupertinoActivityIndicator(),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
