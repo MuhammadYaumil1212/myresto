@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myresto/home/data/local/dataSources/restaurant_local_datasource.dart';
 import 'package:myresto/home/data/repository/home_repository.dart';
 import 'package:myresto/home/presentations/sections/home_search_bar.dart';
 import 'package:myresto/home/presentations/sections/list_restaurant.dart';
+import 'package:myresto/home/presentations/widgets/mode_button.dart';
+import 'package:myresto/utils/values/colors/colors.dart';
 
 import '../../data/models/Restaurant.dart';
 
@@ -131,6 +134,16 @@ class _HomePageState extends State<HomePage> {
           scrolledUnderElevation: 0.0,
           title: Text("Find My Restaurant"),
           backgroundColor: Colors.white,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          elevation: 0.0,
+          child: SvgPicture.asset(
+            "assets/icons/rekursif_icon.svg",
+            color: MyColors.brown500,
+            width: 40,
+            height: 40,
+          ),
         ),
         body: Column(
           children: [
