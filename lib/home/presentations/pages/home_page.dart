@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       _isLoadingMore = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
 
     if (!mounted) return;
 
