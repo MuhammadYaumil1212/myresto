@@ -7998,5 +7998,13 @@
     "rating": 1.2,
     "price": 52000,
     "review": "Pelayanan kurang maksimal saat ramai."
+  },
+  {
+    "id": 1001,
+    "name": "Warung pak jali",
+    "cuisine": "indonesian",
+    "rating": 1.2,
+    "price": 1000,
+    "review": "Pelayanan kurang maksimal saat ramai."
   }
 ]

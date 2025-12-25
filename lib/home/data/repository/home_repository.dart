@@ -76,16 +76,16 @@ class HomeRepository {
   }
 
   void _printSuccessLog(Restaurant result, int steps, Stopwatch sw) {
-    log("✅ DITEMUKAN: ${result.name}");
-    log("📊 STATISTIK:");
+    log("DITEMUKAN: ${result.name}");
+    log("STATISTIK:");
     log("   - Jumlah Langkah (Iterasi): $steps");
     log("   - Waktu Eksekusi: ${sw.elapsedMicroseconds} microsecond");
     log("---------------------------------------");
   }
 
   void _printNotFoundLog(int steps, Stopwatch sw) {
-    log("❌ TIDAK DITEMUKAN");
-    log("📊 STATISTIK:");
+    log("TIDAK DITEMUKAN");
+    log("STATISTIK:");
     log("   - Jumlah Langkah (Iterasi): $steps");
     log("   - Waktu Eksekusi: ${sw.elapsedMicroseconds} microsecond");
     log("---------------------------------------");
