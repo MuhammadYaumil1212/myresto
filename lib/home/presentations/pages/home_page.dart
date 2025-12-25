@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: const ListTile(
                       title: Text(
-                        "Grafik Perbandingan Running Time",
+                        "Laporan Running Time",
                         maxLines: 1,
                         style: TextStyle(
                           color: MyColors.brown400,
@@ -211,7 +211,10 @@ class _HomePageState extends State<HomePage> {
                           overflow: .ellipsis,
                         ),
                       ),
-                      trailing: Icon(Icons.keyboard_arrow_right),
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right,
+                        color: MyColors.brown400,
+                      ),
                     ),
                   ),
                 ),
