@@ -8006,5 +8006,165 @@
     "rating": 1.2,
     "price": 1000,
     "review": "Pelayanan kurang maksimal saat ramai."
+  },
+  {
+    "id": 1002,
+    "name": "Wolfgang's Steakhouse",
+    "cuisine": "steakhouse",
+    "rating": 4.8,
+    "price": 850000,
+    "review": "Steak-nya sangat juicy, worth the price."
+  },
+  {
+    "id": 1003,
+    "name": "Henshin",
+    "cuisine": "japanese",
+    "rating": 4.7,
+    "price": 920000,
+    "review": "Suasana sangat eksklusif dan mewah."
+  },
+  {
+    "id": 1004,
+    "name": "Amuz Gourmet",
+    "cuisine": "french",
+    "rating": 4.9,
+    "price": 780000,
+    "review": "Pengalaman fine dining terbaik di kota ini."
+  },
+  {
+    "id": 1005,
+    "name": "Satoo",
+    "cuisine": "western",
+    "rating": 4.5,
+    "price": 550000,
+    "review": "Buffet hotel bintang lima dengan pilihan terlengkap."
+  },
+  {
+    "id": 1006,
+    "name": "Namaaz Dining",
+    "cuisine": "fine dining",
+    "rating": 5.0,
+    "price": 1000000,
+    "review": "Mahal tapi sepadan dengan pengalaman yang didapat."
+  },
+  {
+    "id": 1007,
+    "name": "Ruth's Chris Steak House",
+    "cuisine": "steakhouse",
+    "rating": 4.6,
+    "price": 950000,
+    "review": "Pelayanan bintang lima, sangat memuaskan."
+  },
+  {
+    "id": 1008,
+    "name": "Akira Back",
+    "cuisine": "japanese",
+    "rating": 4.4,
+    "price": 600000,
+    "review": "Rasa makanan luar biasa, presentasi sangat cantik."
+  },
+  {
+    "id": 1009,
+    "name": "Pierre",
+    "cuisine": "french",
+    "rating": 4.8,
+    "price": 890000,
+    "review": "Sangat cocok untuk anniversary atau acara spesial."
+  },
+  {
+    "id": 1010,
+    "name": "Kahyangan",
+    "cuisine": "fine dining",
+    "rating": 4.7,
+    "price": 980000,
+    "review": "Suasana sangat eksklusif dan mewah."
+  },
+  {
+    "id": 1011,
+    "name": "OKU Japanese",
+    "cuisine": "japanese",
+    "rating": 4.9,
+    "price": 750000,
+    "review": "Harga sebanding dengan kualitas premium dan pelayanan kelas dunia."
+  },
+  {
+    "id": 1012,
+    "name": "Alto Restaurant & Bar",
+    "cuisine": "italian",
+    "rating": 4.6,
+    "price": 820000,
+    "review": "Pilihan wine dan makanannya sempurna."
+  },
+  {
+    "id": 1013,
+    "name": "Li Feng",
+    "cuisine": "chinese premium",
+    "rating": 4.5,
+    "price": 530000,
+    "review": "Rasa makanan luar biasa, presentasi sangat cantik."
+  },
+  {
+    "id": 1014,
+    "name": "Gyu-Kaku Prime",
+    "cuisine": "japanese",
+    "rating": 4.3,
+    "price": 680000,
+    "review": "Harga sebanding dengan kualitas premium dan pelayanan kelas dunia."
+  },
+  {
+    "id": 1015,
+    "name": "Bistecca",
+    "cuisine": "steakhouse",
+    "rating": 4.7,
+    "price": 910000,
+    "review": "Steak-nya sangat juicy, worth the price."
+  },
+  {
+    "id": 1016,
+    "name": "The Arts Cafe",
+    "cuisine": "western",
+    "rating": 4.4,
+    "price": 560000,
+    "review": "Buffet hotel bintang lima dengan pilihan terlengkap."
+  },
+  {
+    "id": 1017,
+    "name": "Vong Kitchen",
+    "cuisine": "fine dining",
+    "rating": 4.2,
+    "price": 720000,
+    "review": "Pengalaman fine dining terbaik di kota ini."
+  },
+  {
+    "id": 1018,
+    "name": "Plataran Menteng",
+    "cuisine": "fine dining",
+    "rating": 4.6,
+    "price": 510000,
+    "review": "Sangat cocok untuk anniversary atau acara spesial."
+  },
+  {
+    "id": 1019,
+    "name": "Turkuaz",
+    "cuisine": "western",
+    "rating": 4.5,
+    "price": 640000,
+    "review": "Pelayanan bintang lima, sangat memuaskan."
+  },
+  {
+    "id": 1020,
+    "name": "Animale",
+    "cuisine": "italian",
+    "rating": 4.3,
+    "price": 590000,
+    "review": "Harga sebanding dengan kualitas premium dan pelayanan kelas dunia."
+  },
+  {
+    "id": 1021,
+    "name": "View Restaurant",
+    "cuisine": "fine dining",
+    "rating": 4.8,
+    "price": 880000,
+    "review": "Suasana sangat eksklusif dan mewah."
   }
 ]
