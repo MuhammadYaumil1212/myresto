@@ -36,13 +36,18 @@ class _ListRestaurantState extends State<ListRestaurant> {
               title: Text(
                 items.name,
                 maxLines: 1,
-                style: TextStyle(fontWeight: .bold, overflow: .ellipsis),
+                style: TextStyle(
+                  fontWeight: .bold,
+                  overflow: .ellipsis,
+                  color: MyColors.brown500,
+                ),
               ),
               subtitle: Text(
                 items.cuisine,
                 overflow: TextOverflow.clip,
                 textAlign: TextAlign.justify,
                 maxLines: 2,
+                style: TextStyle(color: MyColors.brown500),
               ),
               trailing: Text(
                 items.formattedPrice,

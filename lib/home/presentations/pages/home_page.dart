@@ -38,29 +38,6 @@ class _HomePageState extends State<HomePage> {
     _initialLoad();
   }
 
-  Future<void> _initialLoad() async {
-    try {
-      final data = await _repository.fetchRestaurant();
-      if (mounted) {
-        setState(() {
-          _allRestaurants = data;
-          _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
-
-          _isLoading = false;
-          _isRecursiveMode = false;
-          _hasMore = _allRestaurants.length > _displayedRestaurants.length;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   void _loadMoreData() async {
     if (_isLoadingMore || !_hasMore || _controller.text.isNotEmpty) return;
 
@@ -152,6 +129,29 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _initialLoad() async {
+    try {
+      final data = await _repository.fetchRestaurant();
+      if (mounted) {
+        setState(() {
+          _allRestaurants = data;
+          _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
+
+          _isLoading = false;
+          _isRecursiveMode = false;
+          _hasMore = _allRestaurants.length > _displayedRestaurants.length;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -177,6 +177,46 @@ class _HomePageState extends State<HomePage> {
             color: _isRecursiveMode ? MyColors.brown500 : MyColors.brown400,
             width: 30,
             height: 30,
+          ),
+        ),
+        drawer: Drawer(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {},
+                  splashColor: MyColors.brown100,
+                  borderRadius: .all(.circular(10)),
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: MyColors.brown200,
+                        width: 1.5,
+                      ), // Defines the border
+                      borderRadius: .circular(
+                        10.0,
+                      ), // Optional: Adds rounded corners
+                    ),
+                    child: const ListTile(
+                      title: Text(
+                        "Grafik Perbandingan Running Time",
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: MyColors.brown400,
+                          fontWeight: .bold,
+                          overflow: .ellipsis,
+                        ),
+                      ),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         body: Column(
