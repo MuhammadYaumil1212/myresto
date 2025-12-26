@@ -99,9 +99,6 @@ class _RunningTimePageState extends State<RunningTimePage> {
               maxExecutionTime = log.executionTimeUs.toDouble();
             }
           }
-          final double maxY = maxExecutionTime == 0
-              ? 10.0
-              : maxExecutionTime * 1.2;
 
           final List<BarChartGroupData> barGroups = [];
           for (int i = 0; i < logs.length; i++) {
@@ -158,7 +155,6 @@ class _RunningTimePageState extends State<RunningTimePage> {
 
                       final itStats = _stats(iterative);
                       final recStats = _stats(recursive);
-                      final winner = _winnerLabel(itStats, recStats);
 
                       final maxAvg = (itStats.avg > recStats.avg
                           ? itStats.avg
@@ -177,9 +173,10 @@ class _RunningTimePageState extends State<RunningTimePage> {
                         ),
                         margin: const EdgeInsets.symmetric(vertical: 6),
                         child: ExpansionTile(
+                          shape: const Border(),
+                          collapsedShape: const Border(),
                           backgroundColor: Colors.white,
                           splashColor: Colors.transparent,
-
                           leading: const Icon(Icons.payments_outlined),
                           title: Text("Input Price: Rp $price"),
                           childrenPadding: const EdgeInsets.fromLTRB(
@@ -276,14 +273,13 @@ class _MiniComparisonChart extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: SizedBox(
-        height: 180,
+        height: 200,
         child: BarChart(
           BarChartData(
             maxY: maxY,
             barGroups: groups,
             gridData: FlGridData(
               show: true,
-              drawVerticalLine: false,
               getDrawingHorizontalLine: (value) =>
                   FlLine(color: Colors.grey.withOpacity(0.2), strokeWidth: 1),
             ),
@@ -300,8 +296,9 @@ class _MiniComparisonChart extends StatelessWidget {
                   showTitles: true,
                   reservedSize: 44,
                   getTitlesWidget: (value, meta) {
-                    if (value == 0 && meta.min == 0)
+                    if (value == 0 && meta.min == 0) {
                       return const SizedBox.shrink();
+                    }
                     return Text(
                       '${value.toInt()} ms',
                       style: const TextStyle(fontSize: 10, color: Colors.grey),
@@ -315,9 +312,7 @@ class _MiniComparisonChart extends StatelessWidget {
                   showTitles: true,
                   getTitlesWidget: (value, meta) {
                     final idx = value.toInt();
-                    final label = idx == 0
-                        ? "Iteratif (avg)"
-                        : "Rekursif (avg)";
+                    final label = idx == 0 ? "Iteratif" : "Rekursif";
                     return Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
@@ -336,7 +331,7 @@ class _MiniComparisonChart extends StatelessWidget {
               touchTooltipData: BarTouchTooltipData(
                 getTooltipColor: (_) => Colors.blueGrey,
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  final title = group.x == 0 ? "Iteratif avg" : "Rekursif avg";
+                  final title = group.x == 0 ? "Iteratif" : "Rekursif";
                   return BarTooltipItem(
                     "$title\n",
                     const TextStyle(
