@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myresto/home/data/local/dataSources/restaurant_local_datasource.dart';
+import 'package:myresto/home/data/models/search_response.dart';
 import 'package:myresto/home/data/repository/home_repository.dart';
 import 'package:myresto/home/presentations/sections/home_search_bar.dart';
 import 'package:myresto/home/presentations/sections/list_restaurant.dart';
 import 'package:myresto/utils/values/colors/colors.dart';
 
+import '../../../running_time/presentations/data/dataSources/running_time_local_datasource.dart';
+import '../../../running_time/presentations/data/repository/running_time_repository.dart';
+import '../../../running_time/presentations/pages/running_time_page.dart';
 import '../../data/models/Restaurant.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeRepository _repository;
+  late final RunningTimeRepository _runningTimeRepository;
   late TextEditingController _controller;
   final int _batchSize = 20;
   bool _isLoadingMore = false;
@@ -36,6 +41,9 @@ class _HomePageState extends State<HomePage> {
     final dataSource = RestaurantLocalDatasource();
     _repository = HomeRepository(restaurantLocalDatasource: dataSource);
     _initialLoad();
+    _runningTimeRepository = RunningTimeRepository(
+      datasource: RunningTimeLocalDatasource(),
+    );
   }
 
   void _loadMoreData() async {
@@ -92,8 +100,10 @@ class _HomePageState extends State<HomePage> {
       });
       return;
     }
+
     int? searchPrice = int.tryParse(query);
-    Restaurant? result;
+    SearchResponse? result;
+    String methodUsed = _isRecursiveMode ? "Rekursif" : "Iteratif";
     if (searchPrice != null) {
       setState(() => _isLoading = true);
 
@@ -109,10 +119,19 @@ class _HomePageState extends State<HomePage> {
         );
       }
 
+      if (result != null) {
+        await _runningTimeRepository.saveSearchLog(
+          method: methodUsed,
+          price: searchPrice,
+          timeUs: result.executionTimeUs,
+          steps: result.steps,
+        );
+      }
+
       setState(() {
         _isLoading = false;
-        if (result != null) {
-          _displayedRestaurants = [result];
+        if (result != null && result.data != null) {
+          _displayedRestaurants = [result.data!];
         } else {
           _displayedRestaurants = [];
         }
@@ -160,6 +179,11 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
           title: Text("Find My Restaurant"),
+          titleTextStyle: TextStyle(
+            fontSize: 20,
+            color: MyColors.brown400,
+            fontWeight: FontWeight.bold,
+          ),
           backgroundColor: Colors.white,
         ),
         floatingActionButton: FloatingActionButton(
@@ -186,8 +210,33 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
+                const SizedBox(height: 20),
+                Text(
+                  "Total Jumlah Restaurant",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: MyColors.brown400,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "${_allRestaurants.length} Restaurant",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: MyColors.brown400,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 30),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _controller.clear();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RunningTimePage(),
+                      ),
+                    );
+                  },
                   splashColor: MyColors.brown100,
                   borderRadius: .all(.circular(10)),
                   child: Card(
@@ -214,6 +263,15 @@ class _HomePageState extends State<HomePage> {
                         color: MyColors.brown400,
                       ),
                     ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  "versi 1.0",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: MyColors.brown400,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],

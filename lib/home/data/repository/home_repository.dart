@@ -2,11 +2,14 @@ import 'dart:developer';
 
 import 'package:myresto/home/data/local/dataSources/restaurant_local_datasource.dart';
 import 'package:myresto/home/data/models/Restaurant.dart';
+import 'package:myresto/home/data/models/search_response.dart';
 
 class HomeRepository {
   final RestaurantLocalDatasource restaurantLocalDatasource;
+
   HomeRepository({required this.restaurantLocalDatasource});
-  final stopwatch = Stopwatch()..start();
+
+  final stopwatch = Stopwatch();
   int steps = 0;
 
   Future<List<Restaurant>> fetchRestaurant() async {
@@ -18,9 +21,13 @@ class HomeRepository {
   }
 
   //Secara iteratif mencari data dengan interpolation
-  Future<Restaurant?> findRestaurantByInterpolationAlgorithm(int price) async {
+  Future<SearchResponse?> findRestaurantByInterpolationAlgorithm(
+    int price,
+  ) async {
     List<Restaurant> restaurants = await restaurantLocalDatasource
         .getRestaurants();
+    stopwatch.reset();
+    stopwatch.start();
     log("--- MULAI PENCARIAN INTERPOLATION ITERATIF ---");
     log("Mencari Harga: $price");
     log("Total Data: ${restaurants.length} restoran");
@@ -43,7 +50,11 @@ class HomeRepository {
         if (restaurants[low].price == price) {
           stopwatch.stop();
           _printSuccessLog(restaurants[low], steps, stopwatch);
-          return restaurants[low]; //ditemukan
+          return SearchResponse(
+            data: restaurants[low],
+            executionTimeUs: stopwatch.elapsedMicroseconds,
+            steps: steps,
+          );
         }
         _printNotFoundLog(steps, stopwatch);
         return null;
@@ -61,7 +72,11 @@ class HomeRepository {
       if (restaurants[pos].price == price) {
         stopwatch.stop();
         _printSuccessLog(restaurants[pos], steps, stopwatch);
-        return restaurants[pos]; // ditemukan
+        return SearchResponse(
+          data: restaurants[pos],
+          executionTimeUs: stopwatch.elapsedMicroseconds,
+          steps: steps,
+        ); // ditemukan
       }
 
       if (restaurants[pos].price < price) {
@@ -72,25 +87,30 @@ class HomeRepository {
     }
     stopwatch.stop();
     _printNotFoundLog(steps, stopwatch);
-    return null;
+    return SearchResponse(
+      data: null,
+      executionTimeUs: stopwatch.elapsedMicroseconds,
+      steps: steps,
+    );
   }
 
   //Cari data dengan interpolation secara rekursif
-  Future<Restaurant?> findRestaurantByInterpolationRecursive(int price) async {
+  Future<SearchResponse> findRestaurantByInterpolationRecursive(
+    int price,
+  ) async {
     List<Restaurant> restaurants = await restaurantLocalDatasource
         .getRestaurants();
-    log("--- MULAI PENCARIAN INTERPOLATION REKURSIF ---");
-    log("Mencari Harga: $price");
-    log("Total Data: ${restaurants.length} restoran");
 
+    // RESET Stopwatch
+    stopwatch.reset();
+    stopwatch.start();
+
+    log("--- MULAI PENCARIAN INTERPOLATION REKURSIF ---");
     restaurants.sort((a, b) => a.price.compareTo(b.price));
 
-    log(
-      "Range Harga Data: ${restaurants.first.price} - ${restaurants.last.price}",
-    );
-
     if (restaurants.isEmpty) {
-      return null;
+      stopwatch.stop();
+      return SearchResponse(data: null, executionTimeUs: 0, steps: 0);
     }
 
     return _interpolationRecursive(
@@ -102,7 +122,8 @@ class HomeRepository {
     );
   }
 
-  Restaurant? _interpolationRecursive(
+  // Helper Rekursif sekarang mengembalikan SearchResponse
+  SearchResponse _interpolationRecursive(
     List<Restaurant> restaurants,
     int low,
     int high,
@@ -111,42 +132,61 @@ class HomeRepository {
   ) {
     steps++;
 
+    // Base Case: Not Found (Out of bounds)
     if (low > high ||
         price < restaurants[low].price ||
         price > restaurants[high].price) {
       stopwatch.stop();
       _printNotFoundLog(steps, stopwatch);
-      return null;
+      return SearchResponse(
+        data: null,
+        executionTimeUs: stopwatch.elapsedMicroseconds,
+        steps: steps,
+      );
     }
 
+    // Base Case: Flat Range / Avoid Divide by Zero
     if (restaurants[high].price == restaurants[low].price) {
       if (restaurants[low].price == price) {
         stopwatch.stop();
         _printSuccessLog(restaurants[low], steps, stopwatch);
-        return restaurants[low];
+        return SearchResponse(
+          data: restaurants[low],
+          executionTimeUs: stopwatch.elapsedMicroseconds,
+          steps: steps,
+        );
       } else {
         stopwatch.stop();
         _printNotFoundLog(steps, stopwatch);
-        return null;
+        return SearchResponse(
+          data: null,
+          executionTimeUs: stopwatch.elapsedMicroseconds,
+          steps: steps,
+        );
       }
     }
 
+    // rumus interpolation
     int pos =
         low +
         ((price - restaurants[low].price) *
             (high - low) ~/
             (restaurants[high].price - restaurants[low].price));
 
-    log(
-      "Langkah ke-$steps | Low: $low, High: $high, Posisi Tebakan: $pos, Harga di Posisi: ${restaurants[pos].price}",
-    );
+    log("Langkah ke-$steps | Posisi Tebakan: $pos");
 
+    // Check Position
     if (restaurants[pos].price == price) {
       stopwatch.stop();
       _printSuccessLog(restaurants[pos], steps, stopwatch);
-      return restaurants[pos];
+      return SearchResponse(
+        data: restaurants[pos],
+        executionTimeUs: stopwatch.elapsedMicroseconds,
+        steps: steps,
+      );
     }
 
+    // Recursive Calls
     if (restaurants[pos].price < price) {
       return _interpolationRecursive(restaurants, pos + 1, high, price, steps);
     } else {
@@ -155,18 +195,12 @@ class HomeRepository {
   }
 
   void _printSuccessLog(Restaurant result, int steps, Stopwatch sw) {
-    log("DITEMUKAN: ${result.name}");
-    log("STATISTIK:");
-    log("   - Jumlah Langkah (Iterasi): $steps");
-    log("   - Waktu Eksekusi: ${sw.elapsedMicroseconds} microsecond");
-    log("---------------------------------------");
+    log(
+      "DITEMUKAN: ${result.name} dalam ${sw.elapsedMicroseconds} us ($steps langkah)",
+    );
   }
 
   void _printNotFoundLog(int steps, Stopwatch sw) {
-    log("TIDAK DITEMUKAN");
-    log("STATISTIK:");
-    log("   - Jumlah Langkah (Iterasi): $steps");
-    log("   - Waktu Eksekusi: ${sw.elapsedMicroseconds} microsecond");
-    log("---------------------------------------");
+    log("TIDAK DITEMUKAN dalam ${sw.elapsedMicroseconds} us ($steps langkah)");
   }
 }
