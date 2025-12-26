@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   List<Restaurant> _allRestaurants = [];
   List<Restaurant> _displayedRestaurants = [];
 
-  int _searchMode = 0;
+  int _searchMode = 2;
 
   bool _isLoading = true;
   String _errorMessage = "";
@@ -89,15 +89,15 @@ class _HomePageState extends State<HomePage> {
     switch (_searchMode) {
       case 0:
         modeText = "ITERATIF";
-        snackBarColor = MyColors.brown300;
+        snackBarColor = Colors.blue;
         break;
       case 1:
         modeText = "REKURSIF";
         snackBarColor = MyColors.brown500;
         break;
       case 2:
-        modeText = "ITERATIF & REKURSIF";
-        snackBarColor = MyColors.brown200;
+        modeText = "BOTH (ITERATIF & REKURSIF)";
+        snackBarColor = Colors.purple;
         break;
     }
 
@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
           _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
 
           _isLoading = false;
-          _searchMode = 0;
+          _searchMode = 2;
           _hasMore = _allRestaurants.length > _displayedRestaurants.length;
         });
       }
@@ -224,9 +224,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Color _getFabColor() {
-    if (_searchMode == 0) return MyColors.brown300;
+    if (_searchMode == 0) return Colors.blue;
     if (_searchMode == 1) return MyColors.brown500;
-    return MyColors.brown200;
+    return Colors.purple;
   }
 
   @override
@@ -286,9 +286,6 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   onTap: () {
                     _controller.clear();
-                    setState(() {
-                      _displayedRestaurants = _allRestaurants;
-                    });
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const RunningTimePage(),
