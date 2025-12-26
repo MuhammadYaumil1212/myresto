@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = TextEditingController();
     final dataSource = RestaurantLocalDatasource();
@@ -104,22 +103,24 @@ class _HomePageState extends State<HomePage> {
     int? searchPrice = int.tryParse(query);
     SearchResponse? result;
     String methodUsed = _isRecursiveMode ? "Rekursif" : "Iteratif";
+
     if (searchPrice != null) {
       setState(() => _isLoading = true);
 
       if (_isRecursiveMode) {
-        // panggil fungsi rekursif
         result = await _repository.findRestaurantByInterpolationRecursive(
           searchPrice,
         );
       } else {
-        // panggil fungsi iteratif
         result = await _repository.findRestaurantByInterpolationAlgorithm(
           searchPrice,
         );
       }
 
-      if (result != null) {
+      // --- PERUBAHAN DI SINI ---
+      // Menambahkan pengecekan: result.data != null
+      // Artinya log hanya disimpan jika hasil pencarian menemukan data (tidak null)
+      if (result != null && result.data != null) {
         await _runningTimeRepository.saveSearchLog(
           method: methodUsed,
           price: searchPrice,
@@ -127,6 +128,7 @@ class _HomePageState extends State<HomePage> {
           steps: result.steps,
         );
       }
+      // ------------------------
 
       setState(() {
         _isLoading = false;
