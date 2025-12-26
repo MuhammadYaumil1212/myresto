@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage> {
   bool _hasMore = true;
   List<Restaurant> _allRestaurants = [];
   List<Restaurant> _displayedRestaurants = [];
-  bool _isRecursiveMode = false;
+
+  int _searchMode = 0;
+
   bool _isLoading = true;
   String _errorMessage = "";
 
@@ -75,18 +77,38 @@ class _HomePageState extends State<HomePage> {
 
   void _toggleSearchMode() {
     setState(() {
-      _isRecursiveMode = !_isRecursiveMode;
+      _searchMode++;
+      if (_searchMode > 2) {
+        _searchMode = 0;
+      }
     });
+
+    String modeText = "";
+    Color snackBarColor = MyColors.brown200;
+
+    switch (_searchMode) {
+      case 0:
+        modeText = "ITERATIF";
+        snackBarColor = MyColors.brown300;
+        break;
+      case 1:
+        modeText = "REKURSIF";
+        snackBarColor = MyColors.brown500;
+        break;
+      case 2:
+        modeText = "ITERATIF & REKURSIF";
+        snackBarColor = MyColors.brown200;
+        break;
+    }
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "Mode Pencarian: ${_isRecursiveMode ? 'REKURSIF' : 'ITERATIF'}",
+          "Mode Pencarian: $modeText",
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: _isRecursiveMode
-            ? MyColors.brown500
-            : MyColors.brown200,
+        backgroundColor: snackBarColor,
         duration: const Duration(seconds: 1),
       ),
     );
@@ -101,39 +123,67 @@ class _HomePageState extends State<HomePage> {
     }
 
     int? searchPrice = int.tryParse(query);
-    SearchResponse? result;
-    String methodUsed = _isRecursiveMode ? "Rekursif" : "Iteratif";
+    SearchResponse? finalResult;
 
     if (searchPrice != null) {
       setState(() => _isLoading = true);
 
-      if (_isRecursiveMode) {
-        result = await _repository.findRestaurantByInterpolationRecursive(
+      if (_searchMode == 0) {
+        final result = await _repository.findRestaurantByInterpolationAlgorithm(
           searchPrice,
         );
+        if (result != null && result.data != null) {
+          await _runningTimeRepository.saveSearchLog(
+            method: "Iteratif",
+            price: searchPrice,
+            timeUs: result.executionTimeUs,
+            steps: result.steps,
+          );
+        }
+        finalResult = result;
+      } else if (_searchMode == 1) {
+        final result = await _repository.findRestaurantByInterpolationRecursive(
+          searchPrice,
+        );
+        if (result != null && result.data != null) {
+          await _runningTimeRepository.saveSearchLog(
+            method: "Rekursif",
+            price: searchPrice,
+            timeUs: result.executionTimeUs,
+            steps: result.steps,
+          );
+        }
+        finalResult = result;
       } else {
-        result = await _repository.findRestaurantByInterpolationAlgorithm(
-          searchPrice,
-        );
-      }
+        final resultIter = await _repository
+            .findRestaurantByInterpolationAlgorithm(searchPrice);
+        if (resultIter != null && resultIter.data != null) {
+          await _runningTimeRepository.saveSearchLog(
+            method: "Iteratif",
+            price: searchPrice,
+            timeUs: resultIter.executionTimeUs,
+            steps: resultIter.steps,
+          );
+        }
 
-      // --- PERUBAHAN DI SINI ---
-      // Menambahkan pengecekan: result.data != null
-      // Artinya log hanya disimpan jika hasil pencarian menemukan data (tidak null)
-      if (result != null && result.data != null) {
-        await _runningTimeRepository.saveSearchLog(
-          method: methodUsed,
-          price: searchPrice,
-          timeUs: result.executionTimeUs,
-          steps: result.steps,
-        );
+        final resultRec = await _repository
+            .findRestaurantByInterpolationRecursive(searchPrice);
+        if (resultRec != null && resultRec.data != null) {
+          await _runningTimeRepository.saveSearchLog(
+            method: "Rekursif",
+            price: searchPrice,
+            timeUs: resultRec.executionTimeUs,
+            steps: resultRec.steps,
+          );
+        }
+
+        finalResult = resultIter;
       }
-      // ------------------------
 
       setState(() {
         _isLoading = false;
-        if (result != null && result.data != null) {
-          _displayedRestaurants = [result.data!];
+        if (finalResult != null && finalResult.data != null) {
+          _displayedRestaurants = [finalResult.data!];
         } else {
           _displayedRestaurants = [];
         }
@@ -159,7 +209,7 @@ class _HomePageState extends State<HomePage> {
           _displayedRestaurants = _allRestaurants.take(_batchSize).toList();
 
           _isLoading = false;
-          _isRecursiveMode = false;
+          _searchMode = 0;
           _hasMore = _allRestaurants.length > _displayedRestaurants.length;
         });
       }
@@ -171,6 +221,12 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }
+  }
+
+  Color _getFabColor() {
+    if (_searchMode == 0) return MyColors.brown300;
+    if (_searchMode == 1) return MyColors.brown500;
+    return MyColors.brown200;
   }
 
   @override
@@ -193,14 +249,11 @@ class _HomePageState extends State<HomePage> {
           elevation: 2.0,
           backgroundColor: Colors.white,
           shape: CircleBorder(
-            side: BorderSide(
-              color: _isRecursiveMode ? MyColors.brown500 : MyColors.brown300,
-              width: 2,
-            ),
+            side: BorderSide(color: _getFabColor(), width: 2),
           ),
           child: SvgPicture.asset(
             "assets/icons/rekursif_icon.svg",
-            color: _isRecursiveMode ? MyColors.brown500 : MyColors.brown400,
+            color: _getFabColor(),
             width: 30,
             height: 30,
           ),
@@ -233,6 +286,9 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   onTap: () {
                     _controller.clear();
+                    setState(() {
+                      _displayedRestaurants = _allRestaurants;
+                    });
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const RunningTimePage(),
