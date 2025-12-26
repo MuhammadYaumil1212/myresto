@@ -89,15 +89,15 @@ class _HomePageState extends State<HomePage> {
     switch (_searchMode) {
       case 0:
         modeText = "ITERATIF";
-        snackBarColor = Colors.blue;
+        snackBarColor = MyColors.brown300;
         break;
       case 1:
         modeText = "REKURSIF";
         snackBarColor = MyColors.brown500;
         break;
       case 2:
-        modeText = "BOTH (ITERATIF & REKURSIF)";
-        snackBarColor = Colors.purple;
+        modeText = "ITERATIF & REKURSIF";
+        snackBarColor = MyColors.brown200;
         break;
     }
 
@@ -224,9 +224,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Color _getFabColor() {
-    if (_searchMode == 0) return Colors.blue;
+    if (_searchMode == 0) return MyColors.brown300;
     if (_searchMode == 1) return MyColors.brown500;
-    return Colors.purple;
+    return MyColors.brown200;
   }
 
   @override
