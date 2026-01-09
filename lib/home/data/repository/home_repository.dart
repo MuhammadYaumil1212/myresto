@@ -18,7 +18,7 @@ class HomeRepository {
   }
 
   // =========================================================
-  // INTERPOLATION SEARCH - ALL PRICES
+  // INTERPOLATION SEARCH
   // =========================================================
   Future<SearchResponse> findRestaurantByInterpolationAlgorithm(
     int price,
