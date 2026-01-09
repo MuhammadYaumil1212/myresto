@@ -243,10 +243,10 @@ class HomeRepository {
     var menuName = result['menuName'];
     var price = result['price'];
     log("DITEMUKAN: $menuName ($price) di $restoName");
-    log("Waktu: ${sw.elapsedMicroseconds} us ($steps langkah)");
+    log("Waktu: ${sw.elapsedMicroseconds} ms ($steps langkah)");
   }
 
   void _printNotFoundLog(int steps, Stopwatch sw) {
-    log("TIDAK DITEMUKAN dalam ${sw.elapsedMicroseconds} us ($steps langkah)");
+    log("TIDAK DITEMUKAN dalam ${sw.elapsedMicroseconds} ms ($steps langkah)");
   }
 }
