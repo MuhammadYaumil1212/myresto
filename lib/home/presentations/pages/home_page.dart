@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:myresto/home/data/local/dataSources/restaurant_local_datasource.dart';
 import 'package:myresto/home/data/models/search_response.dart';
 import 'package:myresto/home/data/repository/home_repository.dart';
@@ -275,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Text(
-                  "${_allRestaurants.length} Restaurant",
+                  "${NumberFormat.decimalPattern().format(_allRestaurants.length)} Restaurant",
                   style: TextStyle(
                     fontSize: 15,
                     color: MyColors.brown400,
