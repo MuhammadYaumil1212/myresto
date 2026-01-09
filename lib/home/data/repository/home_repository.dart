@@ -35,9 +35,9 @@ class HomeRepository {
       if (restaurant.menuList.isNotEmpty) {
         for (var menu in restaurant.menuList) {
           flatData.add({
-            'price': menu.price, // Key untuk sorting & searching
-            'restaurant': restaurant, // Value yang ingin dikembalikan
-            'menuName': menu.name, // Info tambahan
+            'price': menu.price,
+            'restaurant': restaurant,
+            'menuName': menu.name,
           });
         }
       }
