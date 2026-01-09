@@ -50,7 +50,7 @@ class HomeRepository {
     }
 
     stopwatch.start();
-    log("--- MULAI PENCARIAN (ALL PRICES - MAP APPROACH) ---");
+    log("--- MULAI PENCARIAN ---");
     log("Mencari harga $price di antara ${flatData.length} menu.");
 
     int low = 0;
@@ -144,7 +144,7 @@ class HomeRepository {
     }
 
     stopwatch.start();
-    log("--- MULAI PENCARIAN REKURSIF (ALL PRICES - MAP) ---");
+    log("--- MULAI PENCARIAN REKURSIF ---");
 
     return _interpolationRecursive(
       flatData,

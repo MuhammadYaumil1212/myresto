@@ -53,10 +53,29 @@ class _ListRestaurantState extends State<ListRestaurant> {
                   color: MyColors.brown500,
                 ),
               ),
-              subtitle: Text(
-                items.cuisine,
-                style: TextStyle(color: MyColors.brown500),
+              subtitle: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Text(
+                    items.cuisine,
+                    style: TextStyle(fontSize: 18, color: MyColors.brown500),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "${items.rating} / 5",
+                    style: TextStyle(fontSize: 14, color: Colors.orange),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    items.review,
+                    softWrap: true,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: MyColors.brown300),
+                  ),
+                ],
               ),
+
               trailing: Text(
                 items.formatPrice(items.cheapestPrice),
                 style: const TextStyle(
