@@ -4,7 +4,12 @@ import 'package:myresto/utils/values/colors/colors.dart';
 
 class ListRestaurant extends StatefulWidget {
   final List<Restaurant> itemArray;
-  const ListRestaurant({super.key, required this.itemArray});
+  final int targetPrice;
+  const ListRestaurant({
+    super.key,
+    required this.itemArray,
+    required this.targetPrice,
+  });
 
   @override
   State<ListRestaurant> createState() => _ListRestaurantState();
@@ -18,7 +23,9 @@ class _ListRestaurantState extends State<ListRestaurant> {
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         final items = widget.itemArray[index];
-
+        bool shouldExpand =
+            widget.targetPrice != 0 &&
+            items.menuList.any((menu) => menu.price == widget.targetPrice);
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: Card(
@@ -28,6 +35,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: ExpansionTile(
+              initiallyExpanded: shouldExpand,
               shape: const Border(),
               collapsedShape: const Border(),
               tilePadding: const EdgeInsets.symmetric(
@@ -83,8 +91,14 @@ class _ListRestaurantState extends State<ListRestaurant> {
                             Text(
                               items.formatPrice(menu.price),
                               style: TextStyle(
+                                backgroundColor:
+                                    widget.targetPrice == menu.price
+                                    ? Colors.yellow.withOpacity(0.7)
+                                    : Colors.transparent,
                                 color: MyColors.brown500,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: widget.targetPrice == menu.price
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
                               ),
                             ),
                           ],

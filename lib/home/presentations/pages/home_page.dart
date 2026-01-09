@@ -388,7 +388,10 @@ class _HomePageState extends State<HomePage> {
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: ListRestaurant(itemArray: _displayedRestaurants),
+      child: ListRestaurant(
+        itemArray: _displayedRestaurants,
+        targetPrice: int.tryParse(_controller.text) ?? 0,
+      ),
     );
   }
 }
