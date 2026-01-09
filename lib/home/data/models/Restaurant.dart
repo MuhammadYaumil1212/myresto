@@ -1,11 +1,13 @@
 import 'package:intl/intl.dart';
 
+import 'MenuItem.dart';
+
 class Restaurant {
   final int id;
   final String name;
   final String cuisine;
   final double rating;
-  final int price;
+  final List<MenuItem> menuList;
   final String review;
 
   Restaurant({
@@ -13,7 +15,7 @@ class Restaurant {
     required this.name,
     required this.cuisine,
     required this.rating,
-    required this.price,
+    required this.menuList,
     required this.review,
   });
 
@@ -23,12 +25,23 @@ class Restaurant {
       name: json['name'] as String? ?? 'Unknown',
       cuisine: json['cuisine'] as String? ?? 'General',
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      price: json['price'] as int? ?? 0,
       review: json['review'] as String? ?? '-',
+      menuList: (json['menu_list'] as List<dynamic>? ?? [])
+          .map((e) => MenuItem.fromJson(e))
+          .toList(),
     );
   }
 
-  String get formattedPrice {
+  int get totalPrice {
+    return menuList.fold(0, (sum, item) => sum + item.price);
+  }
+
+  int get cheapestPrice {
+    if (menuList.isEmpty) return 0;
+    return menuList.map((e) => e.price).reduce((a, b) => a < b ? a : b);
+  }
+
+  String formatPrice(int price) {
     return NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp.',
