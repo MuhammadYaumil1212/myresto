@@ -56,7 +56,6 @@ class HomeRepository {
     int low = 0;
     int high = flatData.length - 1;
 
-    // Helper function untuk mengambil harga dari Map agar kodingan lebih rapi
     int getPrice(int index) => flatData[index]['price'] as int;
 
     while (low <= high && price >= getPrice(low) && price <= getPrice(high)) {
@@ -167,7 +166,7 @@ class HomeRepository {
     steps++;
 
     int getPrice(int index) => listData[index]['price'] as int;
-
+    //basis (data nya tidak ditemukan)
     if (low > high || price < getPrice(low) || price > getPrice(high)) {
       stopwatch.stop();
       _printNotFoundLog(steps, stopwatch);
@@ -177,7 +176,7 @@ class HomeRepository {
         steps: steps,
       );
     }
-
+    //pengecekan division by zero
     if (getPrice(low) == getPrice(high)) {
       if (getPrice(low) == price) {
         stopwatch.stop();
