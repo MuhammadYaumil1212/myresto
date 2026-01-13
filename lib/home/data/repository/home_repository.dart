@@ -18,7 +18,7 @@ class HomeRepository {
   }
 
   // =========================================================
-  // INTERPOLATION SEARCH
+  // INTERPOLATION SEARCH ITERATIF
   // =========================================================
   Future<SearchResponse> findRestaurantByInterpolationAlgorithm(
     int price,
@@ -195,7 +195,7 @@ class HomeRepository {
         steps: steps,
       );
     }
-
+    //proses perhitungan posisi interpolation
     int pos =
         low +
         ((price - getPrice(low)) *
@@ -205,7 +205,7 @@ class HomeRepository {
     log(
       "Recursive step $steps | pos=$pos harga=${getPrice(pos)} (${listData[pos]['menuName']})",
     );
-
+    //memeriksa apakah data yang ada di array, sama dengan data yang kita inputkan
     if (getPrice(pos) == price) {
       stopwatch.stop();
       _printSuccessLog(listData[pos], steps, stopwatch);
@@ -215,7 +215,7 @@ class HomeRepository {
         steps: steps,
       );
     }
-
+    //kalau data yang ada di array lebih kecil dari input
     if (getPrice(pos) < price) {
       return _interpolationRecursive(
         listData,
