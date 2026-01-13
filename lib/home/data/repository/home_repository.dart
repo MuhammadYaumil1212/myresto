@@ -176,7 +176,7 @@ class HomeRepository {
         steps: steps,
       );
     }
-    //pengecekan division by zero
+    //pengamanan division by zero
     if (getPrice(low) == getPrice(high)) {
       if (getPrice(low) == price) {
         stopwatch.stop();
